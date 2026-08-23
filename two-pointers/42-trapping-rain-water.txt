@@ -4,37 +4,59 @@
 
 /* 
 Notes:
-Implemented using monotonic stack
+Idea: Water trapped at each index depends on the tallest bar on the left and tallest bar on the right.
 
+Compute leftMax[i] = maximum height from 0 → i.
+
+Compute rightMax[i] = maximum height from n-1 → i.
+
+Water at index i:
+
+water=min(leftMax[i],rightMax[i])−height[i]
+
+Sum the water for all indices.
+
+Steps
+
+Build leftMax array (prefix maximum).
+
+Build rightMax array (suffix maximum).
+
+Traverse once and add trapped water at each index.
+
+Why it works
+
+Water level at a position is limited by the shorter of the tallest bars on both sides.
+
+The current bar's height is occupied, so subtract height[i]...
 */
 
-class Solution
-{
+class Solution {
 public:
-    int trap(vector<int> &height)
-    {
-        int n = height.size(); // Number of elements in the height array
-        int water = 0;         // Initialize the total trapped water volume
-        vector<int> stack;     // Stack to store indices of height elements
-        // Iterate through the heights
-        for (int right = 0; right < n; right++)
-        {
-            // Process each height to trap water
-            while (!stack.empty() && height[stack.back()] < height[right])
-            {
-                // If the current height is greater than the height at the top of the stack
-                int mid = stack.back(); // Get the index of the height at the top of the stack
-                stack.pop_back();       // Pop the index from the stack
-                // If the stack becomes empty, no more water can be trapped
-                if (stack.empty())
-                    break;
-                int left = stack.back();                                                      // Get the index of the next height from the top of the stack
-                int minHeight = min(height[right] - height[mid], height[left] - height[mid]); // Calculate the minimum height of the two borders
-                int width = right - left - 1;                                                 // Calculate the width between the left and right borders
-                water += minHeight * width;                                                   // Calculate the trapped water volume and add it to the total
-            }
-            stack.push_back(right); // Push the current index onto the stack
+    int trap(vector<int>& height) {
+        int n=height.size();
+        vector<int> leftMax=findLeft(height,n);
+        vector<int> rightMax=findRight(height,n);
+        int water=0;
+        for(int i=0;i<n;i++){
+            water+=min(leftMax[i],rightMax[i])-height[i];
         }
-        return water; // Return the total trapped water volume
+        return water;
     }
+    vector<int> findLeft(vector<int>& height, int n) {
+        vector<int> leftMax(n);
+        leftMax[0] = height[0];
+        for(int i = 1; i<n; i++) {
+            leftMax[i] = max(leftMax[i-1], height[i]);
+        }
+        return leftMax;
+    }
+    vector<int> findRight(vector<int>& height, int n) {
+        vector<int> rightMax(n);
+        rightMax[n-1] = height[n-1];
+        for(int i = n-2; i>=0; i--) {
+            rightMax[i] = max(rightMax[i+1], height[i]);
+        }
+        return rightMax;
+    } 
 };
