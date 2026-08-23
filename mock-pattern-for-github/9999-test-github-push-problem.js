@@ -4,7 +4,7 @@
 
 /* 
 Notes:
-Initial note for test.
+Updated note for test!
 */
 
 console.log("Hello GitHub!");
