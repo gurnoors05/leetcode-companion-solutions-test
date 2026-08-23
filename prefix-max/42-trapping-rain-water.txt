@@ -1,0 +1,62 @@
+// Problem: Trapping Rain Water
+// Difficulty: hard
+// URL: https://leetcode.com/problems/trapping-rain-water/
+
+/* 
+Notes:
+Idea: Water trapped at each index depends on the tallest bar on the left and tallest bar on the right.
+
+Compute leftMax[i] = maximum height from 0 → i.
+
+Compute rightMax[i] = maximum height from n-1 → i.
+
+Water at index i:
+
+water=min(leftMax[i],rightMax[i])−height[i]
+
+Sum the water for all indices.
+
+Steps
+
+Build leftMax array (prefix maximum).
+
+Build rightMax array (suffix maximum).
+
+Traverse once and add trapped water at each index.
+
+Why it works
+
+Water level at a position is limited by the shorter of the tallest bars on both sides.
+
+The current bar's height is occupied, so subtract height[i].
+*/
+
+class Solution {
+public:
+    int trap(vector<int>& height) {
+        int n=height.size();
+        vector<int> leftMax=findLeft(height,n);
+        vector<int> rightMax=findRight(height,n);
+        int water=0;
+        for(int i=0;i<n;i++){
+            water+=min(leftMax[i],rightMax[i])-height[i];
+        }
+        return water;
+    }
+    vector<int> findLeft(vector<int>& height, int n) {
+        vector<int> leftMax(n);
+        leftMax[0] = height[0];
+        for(int i = 1; i<n; i++) {
+            leftMax[i] = max(leftMax[i-1], height[i]);
+        }
+        return leftMax;
+    }
+    vector<int> findRight(vector<int>& height, int n) {
+        vector<int> rightMax(n);
+        rightMax[n-1] = height[n-1];
+        for(int i = n-2; i>=0; i--) {
+            rightMax[i] = max(rightMax[i+1], height[i]);
+        }
+        return rightMax;
+    } 
+};
