@@ -1,0 +1,44 @@
+// Problem: Valid Parentheses
+// Difficulty: easy
+// URL: https://leetcode.com/problems/valid-parentheses/
+
+class Solution {
+public:
+    bool isValid(string s) {
+        int n=s.length();
+        stack<char> st;
+        int i=0;
+
+        while(i<n){
+            if(s[i]==')' || s[i]==']' || s[i]=='}'){
+                if(st.empty()){
+                    return false;
+                }
+                if(s[i]==')'){
+                    if(st.top()!='('){
+                        return false;
+                    }
+                }
+                if(s[i]==']'){
+                        if(st.top()!='['){
+                            return false;
+                        }
+
+                    }
+                if(s[i]=='}'){
+                    if(st.top()!='{'){
+                        return false;
+                    }
+                }
+                if(!st.empty()){
+                    st.pop();
+                }
+            }
+            else{
+                st.push(s[i]);
+            }
+            i++;
+        }
+        return st.empty();
+    }
+};
